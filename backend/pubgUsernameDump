@@ -1,0 +1,40 @@
+
+#model.js
+const mongoose = require('mongoose')
+
+const Schema = mongoose.Schema;
+
+const pubgUsernameSchema = new Schema({
+    userUsername: {type: String, required: true, trim: true, unique: true},
+    userPubgGamerTag: {type: String, required: true, trim: true, unique: true},
+}, {
+    timestamps: true,
+});
+
+const pubgUsername = mongoose.model('Pubg Gamertag', pubgUsernameSchema);
+
+module.exports = pubgUsername;
+
+#router file
+const router = require('express').Router();
+let pubgUsername = require('../models/pubgUsername.model');
+
+router.route('/addPubgUser').post((req, res) => {
+    const userUsername = req.body.userUsername;
+    const userPubgGamerTag = req.body.userPubgGamerTag;
+
+    const newPubgUser = new pubgUsername({
+        userUsername,
+        userPubgGamerTag,
+    });
+
+    newPubgUser.save()
+    .then(() => res.json('Pubg User added successfully!'))
+    .catch(err => res.status(400).json('Error: ' + err));
+})
+
+module.exports = router;
+
+#server code
+app.use('/pubgUsername', pubgUsernameRouter)
+const pubgUsernameRouter = require('./routes/pubgUsername')
